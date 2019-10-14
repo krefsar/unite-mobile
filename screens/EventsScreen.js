@@ -1,26 +1,13 @@
-import * as WebBrowser from 'expo-web-browser';
 import React from 'react';
 import {
-  Image,
   Platform,
   ScrollView,
   StyleSheet,
-  Text,
-  TouchableOpacity,
   View,
 } from 'react-native';
-import Icon from 'react-native-vector-icons/Ionicons';
-
-import ActionButton from 'react-native-action-button';
 
 
 class EventsScreen extends React.Component {
-  handleActionPress = () => {
-    const { navigation } = this.props;
-    console.log('navigating', navigation);
-    navigation.navigate('NewEvent');
-  }
-
   render() {
     return (
       <View style={styles.container}>
@@ -28,7 +15,6 @@ class EventsScreen extends React.Component {
           style={styles.container}
           contentContainerStyle={styles.contentContainer}>
         </ScrollView>
-        <ActionButton buttonColor="rgba(231,76,60,1)" onPress={this.handleActionPress} />
       </View>
     );
   }

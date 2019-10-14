@@ -1,3 +1,4 @@
 export default {
-  purple: '#0A004C',
+  blue: '#058ED9',
+  purple: '#5C5686',
 }
