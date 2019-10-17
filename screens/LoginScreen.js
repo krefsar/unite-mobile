@@ -1,5 +1,6 @@
-import React from 'react';
+import { connect } from 'react-redux';
 import {
+  ActivityIndicator,
   KeyboardAvoidingView,
   Platform,
   StatusBar,
@@ -9,7 +10,9 @@ import {
   TouchableOpacity,
   View,
 } from 'react-native';
+import React from 'react';
 
+import authActions from '../redux/actions/auth';
 import colors from '../styles/colors';
 import font from '../styles/font';
 
@@ -30,6 +33,10 @@ class LoginScreen extends React.Component {
   };
 
   handleLoginPress = () => {
+    const { loginWithEmail } = this.props;
+    const { email, password } = this.state;
+
+    loginWithEmail({ email, password });
   };
 
   handlePasswordChange = text => {
@@ -41,7 +48,33 @@ class LoginScreen extends React.Component {
   handleSignUpPress = () => {
   };
 
+  renderLoginButton() {
+    const { loading } = this.props;
+    const { email, password } = this.state;
+
+    const disabled = loading || (!email || !password);
+
+    const buttonStyle = [styles.loginButton];
+    if (disabled) {
+      buttonStyle.push(styles.loginButtonDisabled);
+    }
+
+    return (
+      <TouchableOpacity
+      disabled={!!disabled}
+      onPress={this.handleLoginPress}
+      style={buttonStyle}
+    >
+        {loading ?
+          <ActivityIndicator /> :
+          <Text style={styles.buttonText}>Log In</Text>
+        }
+      </TouchableOpacity>
+    );
+  }
+
   render() {
+    const { error, loading } = this.props;
     const { email, password } = this.state;
 
     return (
@@ -80,12 +113,14 @@ class LoginScreen extends React.Component {
           />
         </View>
 
-        <TouchableOpacity
-          onPress={this.handleLoginPress}
-          style={styles.loginButton}
-        >
-          <Text style={styles.buttonText}>Log In</Text>
-        </TouchableOpacity>
+        {error ?
+          <View style={styles.errorContainer}>
+            <Text style={styles.errorText}>{error}</Text>
+          </View> :
+          null
+        }
+
+        {this.renderLoginButton()}
 
         <TouchableOpacity
           onPress={this.handleSignUpPress}
@@ -107,6 +142,15 @@ const styles = StyleSheet.create({
     backgroundColor: colors.purple,
     flex: 1,
     justifyContent: 'center',
+  },
+  errorContainer: {
+    alignItems: 'center',
+    justifyContent: 'center',
+    paddingTop: 16,
+  },
+  errorText: {
+    color: 'red',
+    fontSize: 14,
   },
   inputContainer: {
     alignItems: 'flex-start',
@@ -142,6 +186,9 @@ const styles = StyleSheet.create({
     paddingTop: 12,
     paddingBottom: 12,
   },
+  loginButtonDisabled: {
+    backgroundColor: 'gray',
+  },
   logo: {
     alignSelf: 'center',
     color: 'white',
@@ -169,4 +216,21 @@ LoginScreen.navigationOptions = {
   header: <View></View>,
 };
 
-export default LoginScreen;
+function mapStateToProps(state) {
+  console.log('state is', state);
+  return {
+    error: state.auth.error,
+    loading: state.auth.loading,
+  };
+}
+
+function mapDispatchToProps(dispatch) {
+  return {
+    loginWithEmail({ email, password }) {
+      dispatch(authActions.loginWithEmail({ email, password }));
+    }
+  };
+}
+
+const ConnectedLoginScreen = connect(mapStateToProps, mapDispatchToProps)(LoginScreen);
+export default ConnectedLoginScreen;
