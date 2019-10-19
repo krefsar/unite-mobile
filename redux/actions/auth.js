@@ -68,6 +68,46 @@ function loginWithEmail({ email, password }) {
   }
 }
 
+function signupWithEmail({ email, password, phoneNumber, username }) {
+  return (dispatch) => {
+    dispatch(startLogin());
+
+    const url = `${SERVER_HOST}/users/create-user`;
+    console.log('fetching url', url);
+    return fetch(url, {
+      method: 'POST',
+      headers: {
+        'Accept': 'application/json',
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({
+        email,
+        password,
+        phone: phoneNumber,
+        username,
+      }),
+    })
+      .then(response => response.json())
+      .then(response => {
+        console.log('got response', response);
+        if (response.error) {
+          throw response.error;
+        }
+
+        const { userToken } = response;
+        dispatch(loginSuccess(userToken));
+      })
+      .catch(err => {
+        console.log('got error', err);
+        dispatch(loginFailure(err));
+      })
+      .finally(() => {
+        dispatch(finishLogin());
+      });
+  }
+}
+
 export default {
   loginWithEmail,
+  signupWithEmail,
 }

@@ -1,6 +1,7 @@
 import { connect } from 'react-redux';
 import {
   ActivityIndicator,
+  AsyncStorage,
   KeyboardAvoidingView,
   Platform,
   StatusBar,
@@ -26,6 +27,13 @@ class LoginScreen extends React.Component {
     };
   }
 
+  async componentDidUpdate(prevProps) {
+    if (this.props.token && !prevProps.token) {
+      await AsyncStorage.setItem('userToken', this.props.token);
+      this.props.navigation.navigate('Events');
+    }
+  }
+
   handleEmailChange = text => {
     this.setState({
       email: text,
@@ -46,6 +54,8 @@ class LoginScreen extends React.Component {
   };
 
   handleSignUpPress = () => {
+    const { navigation } = this.props;
+    navigation.navigate('SignUp');
   };
 
   renderLoginButton() {
@@ -74,7 +84,7 @@ class LoginScreen extends React.Component {
   }
 
   render() {
-    const { error, loading } = this.props;
+    const { error } = this.props;
     const { email, password } = this.state;
 
     return (
@@ -221,6 +231,7 @@ function mapStateToProps(state) {
   return {
     error: state.auth.error,
     loading: state.auth.loading,
+    token: state.auth.token,
   };
 }
 
