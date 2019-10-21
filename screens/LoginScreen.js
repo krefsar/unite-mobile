@@ -41,10 +41,10 @@ class LoginScreen extends React.Component {
   };
 
   handleLoginPress = () => {
-    const { loginWithEmail } = this.props;
+    const { onLoginSubmit } = this.props;
     const { email, password } = this.state;
 
-    loginWithEmail({ email, password });
+    onLoginSubmit({ email, password });
   };
 
   handlePasswordChange = text => {
@@ -237,7 +237,7 @@ function mapStateToProps(state) {
 
 function mapDispatchToProps(dispatch) {
   return {
-    loginWithEmail({ email, password }) {
+    onLoginSubmit({ email, password }) {
       dispatch(authActions.loginWithEmail({ email, password }));
     }
   };

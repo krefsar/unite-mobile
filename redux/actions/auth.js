@@ -1,4 +1,8 @@
-import { FINISH_LOGIN, LOGIN_ERROR, LOGIN_SUCCESS, START_LOGIN } from './actionTypes';
+import {
+  AsyncStorage,
+} from 'react-native';
+
+import { CLEAR_USER, FINISH_LOGIN, LOGIN_ERROR, LOGIN_SUCCESS, START_LOGIN } from './actionTypes';
 import { SERVER_HOST } from '../../config/config';
 
 function startLogin() {
@@ -68,6 +72,46 @@ function loginWithEmail({ email, password }) {
   }
 }
 
+function clearUser() {
+  return {
+    type: CLEAR_USER,
+  };
+}
+
+export function invalidateUser() {
+  return async (dispatch) => {
+    await AsyncStorage.removeItem('userToken');
+    dispatch(clearUser());
+  }
+}
+
+export function loginWithToken({ token }) {
+  return () => {
+    const url = `${SERVER_HOST}/users/me`; 
+    return fetch(url, {
+      method: 'get',
+      headers: {
+        'Accept': 'application/json',
+        'Content-Type': 'application/json',
+        'Authorization': `Bearer ${token}`,
+      },
+    })
+      .then(response => response.json())
+      .then(response => {
+        console.log('got response', response);
+        if (response.error) {
+          throw response.error;
+        }
+
+        return true;
+      })
+      .catch(err => {
+        console.log('got error', err);
+        return false;
+      });
+  }
+}
+
 function signupWithEmail({ email, password, phoneNumber, username }) {
   return (dispatch) => {
     dispatch(startLogin());
@@ -109,5 +153,6 @@ function signupWithEmail({ email, password, phoneNumber, username }) {
 
 export default {
   loginWithEmail,
+  loginWithToken,
   signupWithEmail,
 }
