@@ -1,4 +1,4 @@
-import { CLEAR_USER, FINISH_LOGIN, LOGIN_ERROR, LOGIN_SUCCESS, START_LOGIN } from '../actions/actionTypes';
+import { CLEAR_USER, FINISH_LOGIN, LOGIN_ERROR, LOGIN_SUCCESS, SET_USER, START_LOGIN } from '../actions/actionTypes';
 
 const initialState = {
   currentUser: null,
@@ -27,6 +27,13 @@ export default function auth(state = initialState, action) {
         ...state,
         error: null,
         token: action.payload.userToken,
+      };
+
+    case SET_USER:
+      console.log('action', action);
+      return {
+        ...state,
+        currentUser: action.payload.user,
       };
 
     case START_LOGIN:

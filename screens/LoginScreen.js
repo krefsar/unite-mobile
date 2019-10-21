@@ -124,7 +124,7 @@ class LoginScreen extends React.Component {
         </View>
 
         {error ?
-          <View style={styles.errorContainer}>
+          <View key="login" style={styles.errorContainer}>
             <Text style={styles.errorText}>{error}</Text>
           </View> :
           null

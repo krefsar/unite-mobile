@@ -3,7 +3,7 @@ import { Asset } from 'expo-asset';
 import * as Font from 'expo-font';
 import { Ionicons } from '@expo/vector-icons';
 import React from 'react';
-import { StyleSheet, View } from 'react-native';
+import { Platform, StatusBar, StyleSheet, View } from 'react-native';
 
 import AppNavigator from '../navigation/AppNavigator';
 
@@ -63,6 +63,7 @@ class MainApp extends React.Component {
 
     return (
       <View style={styles.container}>
+        {Platform.OS === 'ios' && <StatusBar barStyle="default" />}	
         {loading ? this.renderLoading() : this.renderApp()}
       </View>
     );

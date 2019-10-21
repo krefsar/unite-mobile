@@ -55,7 +55,12 @@ ChatStack.path = '';
 
 const ProfileStack = createStackNavigator(
   {
-    Profile: ProfileScreen,
+    Profile: {
+      screen: ProfileScreen,
+      navigationOptions: () => ({
+        title: 'Profile',
+      }),
+    },
   },
   config
 );

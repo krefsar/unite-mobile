@@ -2,7 +2,7 @@ import {
   AsyncStorage,
 } from 'react-native';
 
-import { CLEAR_USER, FINISH_LOGIN, LOGIN_ERROR, LOGIN_SUCCESS, START_LOGIN } from './actionTypes';
+import { CLEAR_USER, FINISH_LOGIN, LOGIN_ERROR, LOGIN_SUCCESS, SET_USER, START_LOGIN } from './actionTypes';
 import { SERVER_HOST } from '../../config/config';
 
 function startLogin() {
@@ -78,6 +78,16 @@ function clearUser() {
   };
 }
 
+function setUser(user) {
+  console.log('set user', user);
+  return {
+    type: SET_USER,
+    payload: {
+      user,
+    },
+  };
+}
+
 export function invalidateUser() {
   return async (dispatch) => {
     await AsyncStorage.removeItem('userToken');
@@ -86,8 +96,10 @@ export function invalidateUser() {
 }
 
 export function loginWithToken({ token }) {
-  return () => {
+  return (dispatch) => {
     const url = `${SERVER_HOST}/users/me`; 
+    console.log('fetching', token);
+
     return fetch(url, {
       method: 'get',
       headers: {
@@ -108,6 +120,27 @@ export function loginWithToken({ token }) {
       .catch(err => {
         console.log('got error', err);
         return false;
+      });
+  }
+}
+
+export function getCurrentUser() {
+  return async (dispatch) => {
+    const token = await AsyncStorage.getItem('userToken');
+    const url = `${SERVER_HOST}/users/me`;
+
+    return fetch(url, {
+      method: 'GET',
+      headers: {
+        'Accept': 'application/json',
+        'Content-Type': 'application/json',
+        'Authorization': `Bearer ${token}`,
+      },
+    })
+      .then(response => response.json())
+      .then(response => {
+        console.log('got response', response);
+        dispatch(setUser(response.user));
       });
   }
 }

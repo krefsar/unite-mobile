@@ -129,7 +129,7 @@ class SignUpScreen extends React.Component {
           </View>
 
           <View style={[styles.inputContainer, styles.secondInputContainer]}>
-            <Text style={styles.inputFieldLabel}>Username</Text>
+            <Text style={styles.inputFieldLabel}>Name</Text>
             <TextInput
               autoCapitalize="none"
               autoCorrect={false}
@@ -188,7 +188,7 @@ class SignUpScreen extends React.Component {
           </View>
 
           {error ?
-            <View style={styles.errorContainer}>
+            <View key="signup" style={styles.errorContainer}>
               <Text style={styles.errorText}>{error}</Text>
             </View> :
             null
@@ -210,6 +210,7 @@ class SignUpScreen extends React.Component {
 
 function mapStateToProps(state) {
   return {
+    error: state.auth.error,
   };
 }
 

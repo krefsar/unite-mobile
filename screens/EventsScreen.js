@@ -10,12 +10,10 @@ import {
 class EventsScreen extends React.Component {
   render() {
     return (
-      <View style={styles.container}>
-        <ScrollView
-          style={styles.container}
-          contentContainerStyle={styles.contentContainer}>
-        </ScrollView>
-      </View>
+      <ScrollView
+        style={styles.container}
+        contentContainerStyle={styles.contentContainer}>
+      </ScrollView>
     );
   }
 }
