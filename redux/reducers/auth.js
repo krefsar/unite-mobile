@@ -30,7 +30,6 @@ export default function auth(state = initialState, action) {
       };
 
     case SET_USER:
-      console.log('action', action);
       return {
         ...state,
         currentUser: action.payload.user,

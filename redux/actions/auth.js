@@ -78,7 +78,7 @@ function clearUser() {
   };
 }
 
-function setUser(user) {
+export function setUser(user) {
   console.log('set user', user);
   return {
     type: SET_USER,

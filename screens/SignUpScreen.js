@@ -1,5 +1,6 @@
 import {
   ActivityIndicator,
+  AsyncStorage,
   KeyboardAvoidingView,
   Platform,
   ScrollView,
@@ -30,8 +31,9 @@ class SignUpScreen extends React.Component {
     };
   }
 
-  componentDidUpdate(prevProps) {
+  async componentDidUpdate(prevProps) {
     if (this.props.token && !prevProps.token) {
+      await AsyncStorage.setItem('userToken', this.props.token);
       this.props.navigation.navigate('Events');
     }
   }
@@ -211,6 +213,8 @@ class SignUpScreen extends React.Component {
 function mapStateToProps(state) {
   return {
     error: state.auth.error,
+    loading: state.auth.loading,
+    token: state.auth.token,
   };
 }
 
