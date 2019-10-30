@@ -5,6 +5,7 @@ import { createStackNavigator, createBottomTabNavigator } from 'react-navigation
 import TabBarIcon from '../components/TabBarIcon';
 import EventsScreen from '../screens/EventsScreen';
 import ChatScreen from '../screens/ChatScreen';
+import NewChatScreen from '../screens/NewChatScreen';
 import ProfileScreen from '../screens/ProfileScreen';
 import NewEventScreen from '../screens/NewEventScreen';
 
@@ -40,12 +41,13 @@ EventsStack.path = '';
 const ChatStack = createStackNavigator(
   {
     Chat: ChatScreen,
+    NewChat: NewChatScreen,
   },
   config
 );
 
 ChatStack.navigationOptions = {
-  tabBarLabel: 'Chat',
+  tabBarLabel: 'Chats',
   tabBarIcon: ({ focused }) => (
     <TabBarIcon focused={focused} name={Platform.OS === 'ios' ? 'ios-chatboxes' : 'md-chatboxes'} />
   ),

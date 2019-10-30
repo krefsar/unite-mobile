@@ -1,5 +1,4 @@
 import { connect } from 'react-redux';
-import { ExpoConfigView } from '@expo/samples';
 import {
   Image,
   Platform,
@@ -210,6 +209,8 @@ class ProfileScreen extends ProtectedScreen {
   }
 
   render() {
+    const { user } = this.props;
+    console.log('user is', user);
     return (
       <ScrollView style={styles.container}>
         {this.renderProfilePicture()}
@@ -291,6 +292,7 @@ const styles = StyleSheet.create({
   },
   nameContainer: {
     alignItems: 'center',
+    paddingBottom: 16,
   },
   phoneContainer: {
     alignItems: 'center',

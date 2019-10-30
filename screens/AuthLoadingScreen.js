@@ -17,6 +17,9 @@ class AuthLoadingScreen extends React.Component {
     const { loadUser, navigation } = this.props;
 
     const userToken = await AsyncStorage.getItem('userToken');
+    if (userToken) {
+      await loadUser({ token: userToken });
+    }
     navigation.navigate(userToken ? 'Events' : 'Login');
   };
 
@@ -36,7 +39,7 @@ function mapStateToProps(state) {
 function mapDispatchToProps(dispatch) {
   return {
     loadUser({ token }) {
-      loginWithToken({ token });
+      dispatch(loginWithToken({ token }));
     },
   };
 }
