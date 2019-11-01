@@ -1,11 +1,14 @@
 import { AppLoading } from 'expo';
 import { Asset } from 'expo-asset';
+import { connect } from 'react-redux';
 import * as Font from 'expo-font';
 import { Ionicons } from '@expo/vector-icons';
 import React from 'react';
 import { Platform, StatusBar, StyleSheet, View } from 'react-native';
 
 import AppNavigator from '../navigation/AppNavigator';
+import storage from '../util/storage';
+import authActions from '../redux/actions/auth';
 
 function handleLoadingError(error) {
   console.warn(error);
@@ -34,6 +37,25 @@ class MainApp extends React.Component {
     this.state = {
       loading: false,
     };
+  }
+
+  async componentDidMount() {
+    const { onLoad } = this.props;
+    const token = await storage.getItem('user_token');
+    onLoad(token);
+  }
+
+  async componentDidUpdate(prevProps) {
+    const { token } = this.props;
+    const { token: prevToken } = prevProps;
+
+    if (token !== prevToken) {
+      if (!!token) {
+        await storage.saveItem('user_token', token);
+      } else {
+        await storage.clearItem('user_token');
+      }
+    }
   }
 
   handleFinishLoading() {
@@ -70,11 +92,26 @@ class MainApp extends React.Component {
   }
 }
 
+function mapStateToProps(state) {
+  return {
+    token: state.auth.token,
+  };
+}
+
+function mapDispatchToProps(dispatch) {
+  return {
+    onLoad(token) {
+      dispatch(authActions.loadToken(token));
+    },
+  };
+}
+
+const ConnectedMainApp = connect(mapStateToProps, mapDispatchToProps)(MainApp);
+export default ConnectedMainApp;
+
 const styles = StyleSheet.create({
   container: {
     backgroundColor: '#fff',
     flex: 1,
   },
 });
-
-export default MainApp;

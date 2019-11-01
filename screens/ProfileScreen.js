@@ -14,12 +14,13 @@ import React from 'react';
 
 import colors from '../styles/colors';
 import { getCurrentUser, invalidateUser } from '../redux/actions/auth';
-import ProtectedScreen from './ProtectedScreen';
+import protectedScreen from './protectedScreen';
 import { updateUser } from '../redux/actions/users';
+import storage from '../util/storage';
 
 const DEFAULT_PHOTO_URL = 'https://unite-mobile.s3.amazonaws.com/defaultuser.png';
 
-class ProfileScreen extends ProtectedScreen {
+class ProfileScreen extends React.Component {
   constructor(props) {
     super(props);
 
@@ -31,7 +32,7 @@ class ProfileScreen extends ProtectedScreen {
 
   componentDidMount() {
     const { onLoad } = this.props;
-    onLoad();
+    // onLoad();
   }
 
   handlePhoneEditingEnd = () => {
@@ -210,7 +211,6 @@ class ProfileScreen extends ProtectedScreen {
 
   render() {
     const { user } = this.props;
-    console.log('user is', user);
     return (
       <ScrollView style={styles.container}>
         {this.renderProfilePicture()}
@@ -257,7 +257,7 @@ function mapDispatchToProps(dispatch) {
   };
 }
 
-const ConnectedProfileScreen = connect(mapStateToProps, mapDispatchToProps)(ProfileScreen);
+const ConnectedProfileScreen = connect(mapStateToProps, mapDispatchToProps)(protectedScreen(ProfileScreen));
 export default ConnectedProfileScreen;
 
 const styles = StyleSheet.create({

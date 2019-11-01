@@ -2,8 +2,10 @@ import {
   AsyncStorage,
 } from 'react-native';
 
-import { CLEAR_USER, FINISH_LOGIN, LOGIN_ERROR, LOGIN_SUCCESS, SET_USER, START_LOGIN } from './actionTypes';
+import { SET_TOKEN, CLEAR_USER, FINISH_LOGIN, LOGIN_ERROR, LOGIN_SUCCESS, SET_USER, START_LOGIN } from './actionTypes';
 import { SERVER_HOST } from '../../config/config';
+import { apiFetch } from '../../util/api';
+import storage from '../../util/storage';
 
 function startLogin() {
   return {
@@ -40,21 +42,15 @@ function loginWithEmail({ email, password }) {
     dispatch(startLogin());
 
     const url = `${SERVER_HOST}/auth/login`;
-    console.log('fetching url', url);
-    return fetch(url, {
+    return apiFetch(url, {
       method: 'POST',
-      headers: {
-        'Accept': 'application/json',
-        'Content-Type': 'application/json',
-      },
-      body: JSON.stringify({
+      body: {
         email,
         password,
-      }),
+      }
     })
       .then(response => response.json())
       .then(response => {
-        console.log('got response', response);
         if (response.error) {
           throw response.error;
         }
@@ -63,7 +59,6 @@ function loginWithEmail({ email, password }) {
         dispatch(loginSuccess(userToken));
       })
       .catch(err => {
-        console.log('got error', err);
         dispatch(loginFailure(err));
       })
       .finally(() => {
@@ -72,14 +67,7 @@ function loginWithEmail({ email, password }) {
   }
 }
 
-function clearUser() {
-  return {
-    type: CLEAR_USER,
-  };
-}
-
 export function setUser(user) {
-  console.log('set user', user);
   return {
     type: SET_USER,
     payload: {
@@ -89,16 +77,15 @@ export function setUser(user) {
 }
 
 export function invalidateUser() {
-  return async (dispatch) => {
-    await AsyncStorage.removeItem('userToken');
-    dispatch(clearUser());
-  }
+  return (dispatch) => {
+    dispatch(setUserToken(null));
+    return;
+  };
 }
 
 export function loginWithToken({ token }) {
   return (dispatch) => {
     const url = `${SERVER_HOST}/users/me`; 
-    console.log('fetching', token);
 
     return fetch(url, {
       method: 'get',
@@ -110,7 +97,6 @@ export function loginWithToken({ token }) {
     })
       .then(response => response.json())
       .then(response => {
-        console.log('got response', response);
         if (response.error) {
           throw response.error;
         }
@@ -118,7 +104,6 @@ export function loginWithToken({ token }) {
         return true;
       })
       .catch(err => {
-        console.log('got error', err);
         return false;
       });
   }
@@ -139,7 +124,6 @@ export function getCurrentUser() {
     })
       .then(response => response.json())
       .then(response => {
-        console.log('got response', response);
         dispatch(setUser(response.user));
       });
   }
@@ -147,44 +131,40 @@ export function getCurrentUser() {
 
 function signupWithEmail({ email, password, phoneNumber, username }) {
   return (dispatch) => {
-    dispatch(startLogin());
-
     const url = `${SERVER_HOST}/users/create-user`;
-    console.log('fetching url', url);
-    return fetch(url, {
+
+    return apiFetch(url, {
       method: 'POST',
-      headers: {
-        'Accept': 'application/json',
-        'Content-Type': 'application/json',
-      },
-      body: JSON.stringify({
+      body: {
         email,
         password,
         phone: phoneNumber,
         username,
-      }),
+      },
     })
-      .then(response => response.json())
       .then(response => {
-        console.log('got response', response);
-        if (response.error) {
-          throw response.error;
-        }
-
         const { userToken } = response;
-        dispatch(loginSuccess(userToken));
-      })
-      .catch(err => {
-        console.log('got error', err);
-        dispatch(loginFailure(err));
-      })
-      .finally(() => {
-        dispatch(finishLogin());
+        dispatch(setUserToken(userToken));
       });
   }
 }
 
+function loadToken(token) {
+  return (dispatch) => {
+    dispatch(setUserToken(token));
+    return;
+  };
+}
+
+function setUserToken(token) {
+  return {
+    type: SET_TOKEN,
+    token,
+  };
+}
+
 export default {
+  loadToken,
   loginWithEmail,
   loginWithToken,
   signupWithEmail,

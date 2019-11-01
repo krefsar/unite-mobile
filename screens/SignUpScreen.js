@@ -17,6 +17,8 @@ import React from 'react';
 import authActions from '../redux/actions/auth';
 import colors from '../styles/colors';
 import font from '../styles/font';
+import storage from '../util/storage';
+import unprotectedScreen from './unprotectedScreen';
 
 class SignUpScreen extends React.Component {
   constructor(props) {
@@ -29,13 +31,6 @@ class SignUpScreen extends React.Component {
       phoneNumber: '',
       username: '',
     };
-  }
-
-  async componentDidUpdate(prevProps) {
-    if (this.props.token && !prevProps.token) {
-      await AsyncStorage.setItem('userToken', this.props.token);
-      this.props.navigation.navigate('Events');
-    }
   }
 
   handleConfirmPasswordChange = value => {
@@ -310,5 +305,5 @@ SignUpScreen.navigationOptions = {
   header: <View></View>,
 };
 
-const ConnectedSignUpScreen = connect(mapStateToProps, mapDispatchToProps)(SignUpScreen);
+const ConnectedSignUpScreen = connect(mapStateToProps, mapDispatchToProps)(unprotectedScreen(SignUpScreen));
 export default ConnectedSignUpScreen;
