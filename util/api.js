@@ -1,3 +1,5 @@
+import storage from './storage';
+
 export function apiFetch(url, options = {}) {
   console.log('api fetch url', url, 'options', options);
   const { headers, body, ...rest } = options;
@@ -27,6 +29,18 @@ export function apiFetch(url, options = {}) {
       console.log('got api error', err);
       return err;
     });
+}
+
+export async function authenticatedFetch(url, options = {}) {
+  const token = await storage.getItem('user_token');
+
+  return apiFetch(url, {
+    ...options,
+    headers: {
+      ...options.headers,
+      'Authorization': `Bearer ${token}`,
+    },
+  });
 }
 
 export default {

@@ -35,7 +35,7 @@ class MainApp extends React.Component {
     super(props);
 
     this.state = {
-      loading: false,
+      loading: true,
     };
   }
 
@@ -46,9 +46,20 @@ class MainApp extends React.Component {
     onLoad(token);
   }
 
+  componentDidUpdate(prevProps) {
+    const { authenticated, onAuthenticated } = this.props;
+    const { authenticated: prevAuthenticated } = prevProps;
+
+    console.log('authenticated went from', prevAuthenticated, 'to', authenticated);
+    if ((authenticated !== prevAuthenticated) && authenticated) {
+      console.log('calling onAuthenticated');
+      onAuthenticated();
+    }
+  }
+
   handleFinishLoading() {
     this.setState({
-      loading: true,
+      loading: false,
     });
   }
 
@@ -82,11 +93,17 @@ class MainApp extends React.Component {
 
 function mapStateToProps(state) {
   return {
+    authenticated: state.auth.authenticated,
   };
 }
 
 function mapDispatchToProps(dispatch) {
   return {
+    onAuthenticated() {
+      console.log('on authenticated');
+      dispatch(authActions.loadCurrentUser());
+    },
+
     onLoad(token) {
       dispatch(authActions.loadToken(token));
     },

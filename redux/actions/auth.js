@@ -4,7 +4,7 @@ import {
 
 import { LOGOUT_USER, AUTHENTICATE_USER, SET_TOKEN, CLEAR_USER, FINISH_LOGIN, LOGIN_ERROR, LOGIN_SUCCESS, SET_USER, START_LOGIN } from './actionTypes';
 import { SERVER_HOST } from '../../config/config';
-import { apiFetch } from '../../util/api';
+import { apiFetch, authenticatedFetch } from '../../util/api';
 import storage from '../../util/storage';
 
 function startLogin() {
@@ -22,9 +22,6 @@ function finishLogin() {
 function loginSuccess(userToken) {
   return {
     type: LOGIN_SUCCESS,
-    payload: {
-      userToken,
-    },
   };
 }
 
@@ -49,13 +46,15 @@ function loginWithEmail({ email, password }) {
         password,
       }
     })
-      .then(response => response.json())
       .then(response => {
         if (response.error) {
+          console.log('response error', response.error);
           throw response.error;
         }
 
         const { userToken } = response;
+        dispatch(authenticateUser());
+        storage.saveItem('user_token', userToken);
         dispatch(loginSuccess(userToken));
       })
       .catch(err => {
@@ -70,9 +69,7 @@ function loginWithEmail({ email, password }) {
 export function setUser(user) {
   return {
     type: SET_USER,
-    payload: {
-      user,
-    },
+    user,
   };
 }
 
@@ -178,7 +175,28 @@ function setUserToken(token) {
   };
 }
 
+function loadCurrentUser() {
+  return (dispatch) => {
+    const url = `${SERVER_HOST}/users/me`; 
+
+    console.log('load current user');
+    dispatch(startLogin());
+    return authenticatedFetch(url, {
+      method: 'GET',
+    })
+      .then(response => {
+        console.log('load current user response', response);
+        dispatch(setUser(response.user));
+        dispatch(loginSuccess());
+      })
+      .catch(err => {
+        console.log('error', err);
+      });
+  }
+}
+
 export default {
+  loadCurrentUser,
   loadToken,
   loginWithEmail,
   loginWithToken,

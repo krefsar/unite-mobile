@@ -47,13 +47,13 @@ export default function auth(state = initialState, action) {
       return {
         ...state,
         error: null,
-        token: action.payload.userToken,
+        loading: false,
       };
 
     case SET_USER:
       return {
         ...state,
-        currentUser: action.payload.user,
+        currentUser: action.user,
       };
 
     case START_LOGIN:
