@@ -1,25 +1,24 @@
+import { connect } from 'react-redux';
 import React from 'react';
 
 import storage from '../util/storage';
 
 function protectedScreen(WrappedComponent) {
-  return class extends React.Component {
+  class ProtectedScreen extends React.Component {
     async componentDidMount() {
-      const { navigation } = this.props;
+      const { authenticated, navigation } = this.props;
 
-      const token = await storage.getItem('user_token');
-
-      if (!token) {
+      console.log('protected mount, authenticated?', authenticated);
+      if (!authenticated) {
         navigation.navigate('Login');
       }
     }
 
     async componentDidUpdate() {
-      const { navigation } = this.props;
+      const { authenticated, navigation } = this.props;
 
-      const token = await storage.getItem('user_token');
-
-      if (!token) {
+      console.log('protected update, authenticated?', authenticated);
+      if (!authenticated) {
         navigation.navigate('Login');
       }
     }
@@ -28,6 +27,16 @@ function protectedScreen(WrappedComponent) {
       return <WrappedComponent {...this.props} />;
     }
   };
+
+  function mapStateToProps(state) {
+    console.log('protected state is', state);
+    return {
+      authenticated: state.auth.authenticated,
+    };
+  }
+
+  const ConnectedProtectedScreen = connect(mapStateToProps)(ProtectedScreen);
+  return ConnectedProtectedScreen;
 }
 
 export default protectedScreen;

@@ -6,7 +6,8 @@ import {
 import { connect } from 'react-redux';
 import React from 'react';
 
-import { loginWithToken } from '../redux/actions/auth';
+import authActions from '../redux/actions/auth';
+import storage from '../util/storage';
 
 class AuthLoadingScreen extends React.Component {
   componentDidMount() {
@@ -14,13 +15,15 @@ class AuthLoadingScreen extends React.Component {
   }
 
   attemptLogin = async () => {
-    const { loadUser, navigation } = this.props;
+    const { onLogin, navigation } = this.props;
 
-    const userToken = await AsyncStorage.getItem('userToken');
-    if (userToken) {
-      await loadUser({ token: userToken });
+    const token = await storage.getItem('user_token');
+    if (token) {
+      await onLogin(token);
+      navigation.navigate('Events');
+    } else {
+      navigation.navigate('Login');
     }
-    navigation.navigate(userToken ? 'Events' : 'Login');
   };
 
   render() {
@@ -38,8 +41,8 @@ function mapStateToProps(state) {
 
 function mapDispatchToProps(dispatch) {
   return {
-    loadUser({ token }) {
-      dispatch(loginWithToken({ token }));
+    onLogin(token) {
+      dispatch(authActions.loadToken(token));
     },
   };
 }

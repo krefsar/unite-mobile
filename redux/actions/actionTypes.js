@@ -1,3 +1,5 @@
+export const AUTHENTICATE_USER = 'AUTHENTICATE_USER';
+export const LOGOUT_USER = 'LOGOUT_USER';
 export const CLEAR_USER = 'CLEAR_USER';
 export const FINISH_LOGIN = 'FINISH_LOGIN';
 export const LOGIN_ERROR = 'LOGIN_ERROR';

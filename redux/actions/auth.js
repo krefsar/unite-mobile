@@ -2,7 +2,7 @@ import {
   AsyncStorage,
 } from 'react-native';
 
-import { SET_TOKEN, CLEAR_USER, FINISH_LOGIN, LOGIN_ERROR, LOGIN_SUCCESS, SET_USER, START_LOGIN } from './actionTypes';
+import { LOGOUT_USER, AUTHENTICATE_USER, SET_TOKEN, CLEAR_USER, FINISH_LOGIN, LOGIN_ERROR, LOGIN_SUCCESS, SET_USER, START_LOGIN } from './actionTypes';
 import { SERVER_HOST } from '../../config/config';
 import { apiFetch } from '../../util/api';
 import storage from '../../util/storage';
@@ -77,9 +77,15 @@ export function setUser(user) {
 }
 
 export function invalidateUser() {
-  return (dispatch) => {
-    dispatch(setUserToken(null));
-    return;
+  return async (dispatch) => {
+    await storage.clearItem('user_token');
+    dispatch(logoutUser());
+  };
+}
+
+function logoutUser() {
+  return {
+    type: LOGOUT_USER,
   };
 }
 
@@ -144,15 +150,24 @@ function signupWithEmail({ email, password, phoneNumber, username }) {
     })
       .then(response => {
         const { userToken } = response;
-        dispatch(setUserToken(userToken));
+        dispatch(authenticateUser());
+        storage.saveItem('user_token', userToken);
       });
   }
 }
 
+function authenticateUser() {
+  return {
+    type: AUTHENTICATE_USER,
+  };
+}
+
 function loadToken(token) {
   return (dispatch) => {
-    dispatch(setUserToken(token));
-    return;
+    console.log('load token', token);
+    if (token) {
+      dispatch(authenticateUser());
+    }
   };
 }
 

@@ -42,20 +42,8 @@ class MainApp extends React.Component {
   async componentDidMount() {
     const { onLoad } = this.props;
     const token = await storage.getItem('user_token');
+    console.log('calling on load with token', token);
     onLoad(token);
-  }
-
-  async componentDidUpdate(prevProps) {
-    const { token } = this.props;
-    const { token: prevToken } = prevProps;
-
-    if (token !== prevToken) {
-      if (!!token) {
-        await storage.saveItem('user_token', token);
-      } else {
-        await storage.clearItem('user_token');
-      }
-    }
   }
 
   handleFinishLoading() {
@@ -94,7 +82,6 @@ class MainApp extends React.Component {
 
 function mapStateToProps(state) {
   return {
-    token: state.auth.token,
   };
 }
 

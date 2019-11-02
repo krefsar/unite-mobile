@@ -206,10 +206,10 @@ class SignUpScreen extends React.Component {
 }
 
 function mapStateToProps(state) {
+  console.log('state is', state);
   return {
     error: state.auth.error,
     loading: state.auth.loading,
-    token: state.auth.token,
   };
 }
 

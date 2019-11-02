@@ -1,14 +1,29 @@
-import { SET_TOKEN, CLEAR_USER, FINISH_LOGIN, LOGIN_ERROR, LOGIN_SUCCESS, SET_USER, START_LOGIN } from '../actions/actionTypes';
+import { LOGOUT_USER, AUTHENTICATE_USER, SET_TOKEN, CLEAR_USER, FINISH_LOGIN, LOGIN_ERROR, LOGIN_SUCCESS, SET_USER, START_LOGIN } from '../actions/actionTypes';
 
 const initialState = {
   currentUser: null,
   error: null,
   loading: false,
   token: null,
+  authenticated: false,
 };
 
 export default function auth(state = initialState, action) {
   switch (action.type) {
+    case AUTHENTICATE_USER:
+      console.log('calling AUTHENTICATE_USER');
+      return {
+        ...state,
+        authenticated: true,
+      };
+
+    case LOGOUT_USER:
+      console.log('calling LOGOUT_USER');
+      return {
+        ...state,
+        authenticated: false,
+      };
+
     case SET_TOKEN:
       return {
         ...state,

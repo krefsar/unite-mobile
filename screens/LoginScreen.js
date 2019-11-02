@@ -16,6 +16,7 @@ import React from 'react';
 import authActions from '../redux/actions/auth';
 import colors from '../styles/colors';
 import font from '../styles/font';
+import unprotectedScreen from './unprotectedScreen';
 
 class LoginScreen extends React.Component {
   constructor(props) {
@@ -25,13 +26,6 @@ class LoginScreen extends React.Component {
       email: '',
       password: '',
     };
-  }
-
-  async componentDidUpdate(prevProps) {
-    if (this.props.token && !prevProps.token) {
-      await AsyncStorage.setItem('userToken', this.props.token);
-      this.props.navigation.navigate('Events');
-    }
   }
 
   handleEmailChange = text => {
@@ -230,7 +224,6 @@ function mapStateToProps(state) {
   return {
     error: state.auth.error,
     loading: state.auth.loading,
-    token: state.auth.token,
   };
 }
 
@@ -242,5 +235,5 @@ function mapDispatchToProps(dispatch) {
   };
 }
 
-const ConnectedLoginScreen = connect(mapStateToProps, mapDispatchToProps)(LoginScreen);
+const ConnectedLoginScreen = connect(mapStateToProps, mapDispatchToProps)(unprotectedScreen(LoginScreen));
 export default ConnectedLoginScreen;
