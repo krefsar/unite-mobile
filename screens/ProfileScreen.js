@@ -336,6 +336,9 @@ const styles = StyleSheet.create({
   },
 });
 
-ProfileScreen.navigationOptions = {
-  headerTitle: 'Profile',
-};
+ConnectedProfileScreen.navigationOptions = ({ navigation }) => ({
+  headerTitleStyle: {
+    fontSize: 24,
+  },
+  title: 'Profile',
+});
