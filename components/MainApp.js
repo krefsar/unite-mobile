@@ -42,7 +42,6 @@ class MainApp extends React.Component {
   async componentDidMount() {
     const { onLoad } = this.props;
     const token = await storage.getItem('user_token');
-    console.log('calling on load with token', token);
     onLoad(token);
   }
 
@@ -50,9 +49,7 @@ class MainApp extends React.Component {
     const { authenticated, onAuthenticated } = this.props;
     const { authenticated: prevAuthenticated } = prevProps;
 
-    console.log('authenticated went from', prevAuthenticated, 'to', authenticated);
     if ((authenticated !== prevAuthenticated) && authenticated) {
-      console.log('calling onAuthenticated');
       onAuthenticated();
     }
   }
@@ -100,7 +97,6 @@ function mapStateToProps(state) {
 function mapDispatchToProps(dispatch) {
   return {
     onAuthenticated() {
-      console.log('on authenticated');
       dispatch(authActions.loadCurrentUser());
     },
 

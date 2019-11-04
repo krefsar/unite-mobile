@@ -11,14 +11,12 @@ const initialState = {
 export default function auth(state = initialState, action) {
   switch (action.type) {
     case AUTHENTICATE_USER:
-      console.log('calling AUTHENTICATE_USER');
       return {
         ...state,
         authenticated: true,
       };
 
     case LOGOUT_USER:
-      console.log('calling LOGOUT_USER');
       return {
         ...state,
         authenticated: false,

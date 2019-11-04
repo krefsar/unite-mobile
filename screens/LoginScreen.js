@@ -34,11 +34,13 @@ class LoginScreen extends React.Component {
     });
   };
 
-  handleLoginPress = () => {
+  handleLoginPress = async () => {
     const { onLoginSubmit } = this.props;
     const { email, password } = this.state;
 
-    onLoginSubmit({ email, password });
+    console.log('submitting login');
+    await onLoginSubmit({ email, password });
+    console.log('done submitting login');
   };
 
   handlePasswordChange = text => {
@@ -230,7 +232,7 @@ function mapStateToProps(state) {
 function mapDispatchToProps(dispatch) {
   return {
     onLoginSubmit({ email, password }) {
-      dispatch(authActions.loginWithEmail({ email, password }));
+      return dispatch(authActions.loginWithEmail({ email, password }));
     }
   };
 }

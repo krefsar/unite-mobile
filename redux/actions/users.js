@@ -2,8 +2,10 @@ import {
   AsyncStorage,
 } from 'react-native';
 
+import { ADD_USER } from './actionTypes';
 import { SERVER_HOST } from '../../config/config';
 import { setUser } from './auth';
+import { apiFetch, authenticatedFetch } from '../../util/api';
 
 export function updateUser(updatedUser) {
   return async (dispatch) => {
@@ -23,4 +25,30 @@ export function updateUser(updatedUser) {
         dispatch(setUser(response.user));
       });
   }
+}
+
+function loadUser(userId) {
+  return (dispatch) => {
+    console.log('load user', userId);
+    const url = `${SERVER_HOST}/users/${userId}`;
+
+    return apiFetch(url, {
+      method: 'GET',
+    })
+      .then(response => {
+        console.log('got response', response);
+        dispatch(addUser(response.user));
+      });
+  };
+}
+
+function addUser(user) {
+  return {
+    type: ADD_USER,
+    user,
+  };
+}
+
+export default {
+  loadUser,
 }

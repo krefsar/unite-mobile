@@ -8,7 +8,6 @@ function unprotectedScreen(WrappedComponent) {
     async componentDidMount() {
       const { authenticated, navigation } = this.props;
 
-      console.log('unprotected mount, authenticated?', authenticated);
       if (authenticated) {
         navigation.navigate('Profile');
       }
@@ -17,7 +16,6 @@ function unprotectedScreen(WrappedComponent) {
     async componentDidUpdate() {
       const { authenticated, navigation } = this.props;
 
-      console.log('unprotected update, authenticated?', authenticated);
       if (authenticated) {
         navigation.navigate('Profile');
       }
@@ -29,7 +27,6 @@ function unprotectedScreen(WrappedComponent) {
   };
 
   function mapStateToProps(state) {
-    console.log('unprotected state is', state);
     return {
       authenticated: state.auth.authenticated,
     };

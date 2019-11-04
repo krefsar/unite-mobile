@@ -8,7 +8,6 @@ function protectedScreen(WrappedComponent) {
     async componentDidMount() {
       const { authenticated, navigation } = this.props;
 
-      console.log('protected mount, authenticated?', authenticated);
       if (!authenticated) {
         navigation.navigate('Login');
       }
@@ -17,7 +16,6 @@ function protectedScreen(WrappedComponent) {
     async componentDidUpdate() {
       const { authenticated, navigation } = this.props;
 
-      console.log('protected update, authenticated?', authenticated);
       if (!authenticated) {
         navigation.navigate('Login');
       }
@@ -29,7 +27,6 @@ function protectedScreen(WrappedComponent) {
   };
 
   function mapStateToProps(state) {
-    console.log('protected state is', state);
     return {
       authenticated: state.auth.authenticated,
     };

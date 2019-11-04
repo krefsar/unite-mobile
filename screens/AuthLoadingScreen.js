@@ -17,11 +17,10 @@ class AuthLoadingScreen extends React.Component {
   attemptLogin = async () => {
     const { onLogin, navigation } = this.props;
 
-    console.log('attempt login auth loading screen');
     const token = await storage.getItem('user_token');
     if (token) {
       await onLogin(token);
-      navigation.navigate('Events');
+      navigation.navigate('Chat');
     } else {
       navigation.navigate('Login');
     }

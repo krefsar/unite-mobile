@@ -46,15 +46,14 @@ function loginWithEmail({ email, password }) {
         password,
       }
     })
-      .then(response => {
+      .then(async (response) => {
         if (response.error) {
-          console.log('response error', response.error);
           throw response.error;
         }
 
         const { userToken } = response;
+        await storage.saveItem('user_token', userToken);
         dispatch(authenticateUser());
-        storage.saveItem('user_token', userToken);
         dispatch(loginSuccess(userToken));
       })
       .catch(err => {
@@ -161,7 +160,6 @@ function authenticateUser() {
 
 function loadToken(token) {
   return (dispatch) => {
-    console.log('load token', token);
     if (token) {
       dispatch(authenticateUser());
     }
@@ -179,23 +177,37 @@ function loadCurrentUser() {
   return (dispatch) => {
     const url = `${SERVER_HOST}/users/me`; 
 
-    console.log('load current user');
     dispatch(startLogin());
     return authenticatedFetch(url, {
       method: 'GET',
     })
       .then(response => {
-        console.log('load current user response', response);
         dispatch(setUser(response.user));
         dispatch(loginSuccess());
       })
       .catch(err => {
-        console.log('error', err);
       });
   }
 }
 
+function loadContacts(phoneNumbers) {
+  return (dispatch) => {
+    const url = `${SERVER_HOST}/users/add-contacts`;
+
+    return authenticatedFetch(url, {
+      method: 'POST',
+      body: {
+        phoneNumbers,
+      },
+    })
+      .then(response => {
+        dispatch(setUser(response.user));
+      });
+  };
+}
+
 export default {
+  loadContacts,
   loadCurrentUser,
   loadToken,
   loginWithEmail,
