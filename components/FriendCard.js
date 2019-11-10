@@ -8,21 +8,17 @@ import colors from '../styles/colors';
 const DEFAULT_PHOTO_URL = 'https://unite-mobile.s3.amazonaws.com/defaultuser.png';
 
 class FriendCard extends React.Component {
-  componentDidMount() {
-    const { friendId, onLoad } = this.props;
-    console.log('mounting friendcard', friendId);
-    onLoad(friendId);
-  }
-
   render() {
     const { friend } = this.props;
     console.log('render friend', friend);
     const { photoUrl = DEFAULT_PHOTO_URL } = friend || {};
 
     return (
-      <View>
-        <View style={styles.photoContainer}>
-          <Image source={{ uri: photoUrl }} style={styles.photo} />
+      <View style={styles.container}>
+        <View style={styles.cardLeft}>
+          <View style={styles.photoContainer}>
+            <Image source={{ uri: photoUrl }} style={styles.photo} />
+          </View>
         </View>
 
         <View style={styles.infoContainer}>
@@ -35,26 +31,42 @@ class FriendCard extends React.Component {
 }
 
 const styles = StyleSheet.create({
+  container: {
+    alignItems: 'center',
+    borderBottomWidth: 1,
+    borderColor: colors.grayLight,
+    flexDirection: 'row',
+  },
+  cardLeft: {
+    paddingTop: 12,
+    paddingBottom: 12,
+    paddingLeft: 12,
+    paddingRight: 12,
+  },
   photoContainer: {
     alignItems: 'center',
-    paddingBottom: 16,
-    paddingTop: 16,
+    borderColor: colors.blue,
+    borderRadius: 32,
+    borderWidth: 2,
+    height: 64,
+    overflow: 'hidden',
+    width: 64,
   },
   photo: {
     backgroundColor: colors.purple,
-    borderWidth: 2,
-    borderColor: colors.blue,
-    borderRadius: 56,
-    height: 112,
-    width: 112,
+    height: '100%',
+    width: '100%',
     resizeMode: 'center',
   },
   infoContainer: {
+    marginLeft: 2,
   },
   friendName: {
     fontSize: 18,
+    fontWeight: '500',
   },
   friendStatus: {
+    color: colors.grayLight,
     fontSize: 12,
   },
 });
@@ -64,15 +76,12 @@ function mapStateToProps(state, ownProps) {
 
   console.log('friend id', friendId, 'state', state);
   return {
-    friend: state.users.users[friendId] || {},
+    friend: state.users.friends[friendId] || {},
   };
 }
 
 function mapDispatchToProps(dispatch) {
   return {
-    onLoad(friendId) {
-      dispatch(userActions.loadUser(friendId));
-    },
   };
 }
 

@@ -2,7 +2,7 @@ import * as Contacts from 'expo-contacts';
 import { connect } from 'react-redux';
 import * as Permissions from 'expo-permissions';
 import React from 'react';
-import { View, Button, ActivityIndicator, ScrollView, Text, TouchableOpacity } from 'react-native';
+import { View, Button, ActivityIndicator, ScrollView, StyleSheet, Text, TouchableOpacity } from 'react-native';
 
 import authActions from '../redux/actions/auth';
 import FriendCard from '../components/FriendCard';
@@ -16,6 +16,20 @@ class NewChatScreen extends React.Component {
     this.state = {
       loadingContacts: false,
     };
+  }
+
+  componentDidMount() {
+    const { currentUser = {}, loadFriends } = this.props;
+    loadFriends(currentUser._id);
+  }
+
+  componentDidUpdate(prevProps) {
+    const { currentUser = {}, loadFriends } = this.props;
+    const { currentUser: prevUser = {} } = prevProps;
+
+    if (currentUser !== prevUser) {
+      loadFriends(currentUser._id);
+    }
   }
 
   importContacts = async () => {
@@ -67,9 +81,9 @@ class NewChatScreen extends React.Component {
     }
 
     return (
-      <View>
-        <Text>You can import your phone contacts to see who is already on Unite.</Text>
-        <Button title="Import Contacts" onPress={this.importContacts} />
+      <View style={styles.contactImportContainer}>
+        <Text style={styles.contactImportText}>You can import your phone contacts to see who's already on Unite.</Text>
+        <Button title="Import Contacts" onPress={this.importContacts} style={styles.contactImportButton} />
       </View>
     );
   }
@@ -84,6 +98,19 @@ class NewChatScreen extends React.Component {
   }
 }
 
+const styles = StyleSheet.create({
+  contactImportContainer: {
+    alignItems: 'center',
+    marginTop: 12,
+  },
+  contactImportText: {
+    marginBottom: 8,
+    paddingLeft: 12,
+    paddingRight: 12,
+    textAlign: 'center',
+  },
+});
+
 function mapStateToProps(state) {
   const currentUser = state.auth.currentUser || {};
   const friends = currentUser.friends || [];
@@ -96,6 +123,10 @@ function mapStateToProps(state) {
 
 function mapDispatchToProps(dispatch) {
   return {
+    loadFriends(userId) {
+      dispatch(userActions.loadFriends(userId));
+    },
+
     loadContacts(phoneNumbers) {
       return dispatch(authActions.loadContacts(phoneNumbers));
     },

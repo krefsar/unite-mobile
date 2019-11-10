@@ -33,6 +33,7 @@ export function apiFetch(url, options = {}) {
 
 export async function authenticatedFetch(url, options = {}) {
   const token = await storage.getItem('user_token');
+  console.log('making authenticated fetch with token', token);
 
   return apiFetch(url, {
     ...options,

@@ -1,17 +1,35 @@
+import { connect } from 'react-redux';
 import React from 'react';
 import { ScrollView, StyleSheet, Text, TouchableOpacity } from 'react-native';
 import { ExpoLinksView } from '@expo/samples';
 
 import colors from '../styles/colors';
+import userActions from '../redux/actions/users';
+import FriendCard from '../components/FriendCard';
 
-export default function ChatScreen() {
-  return (
-    <ScrollView style={styles.container}>
-    </ScrollView>
-  );
+class ChatScreen extends React.Component {
+  render() {
+    return (
+      <ScrollView style={styles.container}>
+      </ScrollView>
+    );
+  }
 }
 
-ChatScreen.navigationOptions = ({ navigation }) => ({
+function mapStateToProps(state) {
+  return {
+  };
+}
+
+function mapDispatchToProps(dispatch) {
+  return {
+  };
+}
+
+const ConnectedChatScreen = connect(mapStateToProps, mapDispatchToProps)(ChatScreen);
+export default ConnectedChatScreen;
+
+ConnectedChatScreen.navigationOptions = ({ navigation }) => ({
   title: 'Chats',
   headerStyle: {
     backgroundColor: colors.purple,
@@ -33,7 +51,6 @@ ChatScreen.navigationOptions = ({ navigation }) => ({
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    paddingTop: 15,
     backgroundColor: '#fff',
   },
   newChatButton: {

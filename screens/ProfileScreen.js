@@ -106,8 +106,10 @@ class ProfileScreen extends React.Component {
     const { photoUrl = DEFAULT_PHOTO_URL } = user || {};
 
     return (
-      <View style={styles.photoContainer}>
-        <Image source={{ uri: photoUrl }} style={styles.photo} />
+      <View style={styles.profilePhotoSection}>
+        <View style={styles.photoContainer}>
+          <Image source={{ uri: photoUrl }} style={styles.photo} />
+        </View>
       </View>
     );
   }
@@ -318,8 +320,17 @@ const styles = StyleSheet.create({
   },
   photoContainer: {
     alignItems: 'center',
-    paddingBottom: 16,
-    paddingTop: 16,
+    marginBottom: 16,
+    marginTop: 16,
+    borderWidth: 2,
+    borderColor: colors.blue,
+    borderRadius: 56,
+    height: 112,
+    width: 112,
+    overflow: 'hidden',
+  },
+  profilePhotoSection: {
+    alignItems: 'center',
   },
   statusContainer: {
     alignItems: 'center',
