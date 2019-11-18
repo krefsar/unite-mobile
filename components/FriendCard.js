@@ -70,6 +70,7 @@ const styles = StyleSheet.create({
     fontWeight: 'bold',
   },
   friendStatus: {
+    color: colors.grayLight,
     fontSize: 12,
   },
 });
@@ -78,15 +79,12 @@ function mapStateToProps(state, ownProps) {
   const { friendId } = ownProps;
 
   return {
-    friend: state.users.users[friendId] || {},
+    friend: state.users.friends[friendId] || {},
   };
 }
 
 function mapDispatchToProps(dispatch) {
   return {
-    onLoad(friendId) {
-      dispatch(userActions.loadUser(friendId));
-    },
   };
 }
 

@@ -7,6 +7,8 @@ import { ExpoLinksView } from '@expo/samples';
 import chatActions from '../redux/actions/chat';
 import ChatCard from '../components/ChatCard';
 import colors from '../styles/colors';
+import userActions from '../redux/actions/users';
+import FriendCard from '../components/FriendCard';
 
 class ChatScreen extends React.Component {
   componentDidMount() {
@@ -53,7 +55,9 @@ function mapDispatchToProps(dispatch) {
   };
 }
 
-ChatScreen.navigationOptions = ({ navigation }) => ({
+const ConnectedChatScreen = connect(mapStateToProps, mapDispatchToProps)(ChatScreen);
+
+ConnectedChatScreen.navigationOptions = ({ navigation }) => ({
   title: 'Chats',
   headerStyle: {
     backgroundColor: colors.purple,
@@ -95,4 +99,4 @@ ChatScreen.defaultProps = {
   onLoad: () => {},
 };
 
-export default connect(mapStateToProps, mapDispatchToProps)(ChatScreen);
+export default connect(mapStateToProps, mapDispatchToProps)(ConnectedChatScreen);

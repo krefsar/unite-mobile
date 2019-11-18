@@ -50,6 +50,7 @@ class MainApp extends React.Component {
     const { authenticated: prevAuthenticated } = prevProps;
 
     if ((authenticated !== prevAuthenticated) && authenticated) {
+      console.log('calling on authenticated');
       onAuthenticated();
     }
   }

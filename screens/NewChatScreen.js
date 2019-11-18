@@ -19,6 +19,20 @@ class NewChatScreen extends React.Component {
     };
   }
 
+  componentDidMount() {
+    const { currentUser = {}, loadFriends } = this.props;
+    loadFriends(currentUser._id);
+  }
+
+  componentDidUpdate(prevProps) {
+    const { currentUser = {}, loadFriends } = this.props;
+    const { currentUser: prevUser = {} } = prevProps;
+
+    if (currentUser !== prevUser) {
+      loadFriends(currentUser._id);
+    }
+  }
+
   importContacts = async () => {
     const { loadContacts } = this.props;
 
@@ -133,6 +147,10 @@ function mapStateToProps(state) {
 
 function mapDispatchToProps(dispatch) {
   return {
+    loadFriends(userId) {
+      dispatch(userActions.loadFriends(userId));
+    },
+
     loadContacts(phoneNumbers) {
       return dispatch(authActions.loadContacts(phoneNumbers));
     },

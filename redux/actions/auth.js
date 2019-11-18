@@ -53,8 +53,8 @@ function loginWithEmail({ email, password }) {
 
         const { userToken } = response;
         await storage.saveItem('user_token', userToken);
-        dispatch(authenticateUser());
         dispatch(loginSuccess(userToken));
+        dispatch(authenticateUser());
       })
       .catch(err => {
         dispatch(loginFailure(err));
@@ -144,10 +144,10 @@ function signupWithEmail({ email, password, phoneNumber, username }) {
         username,
       },
     })
-      .then(response => {
+      .then(async (response) => {
         const { userToken } = response;
+        await storage.saveItem('user_token', userToken);
         dispatch(authenticateUser());
-        storage.saveItem('user_token', userToken);
       });
   }
 }

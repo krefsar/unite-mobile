@@ -106,8 +106,10 @@ class ProfileScreen extends React.Component {
     const { photoUrl = DEFAULT_PHOTO_URL } = user || {};
 
     return (
-      <View style={styles.photoContainer}>
-        <Image source={{ uri: photoUrl }} style={styles.photo} />
+      <View style={styles.profilePhotoSection}>
+        <View style={styles.photoContainer}>
+          <Image source={{ uri: photoUrl }} style={styles.photo} />
+        </View>
       </View>
     );
   }
