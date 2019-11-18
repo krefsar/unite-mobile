@@ -38,9 +38,7 @@ class LoginScreen extends React.Component {
     const { onLoginSubmit } = this.props;
     const { email, password } = this.state;
 
-    console.log('submitting login');
     await onLoginSubmit({ email, password });
-    console.log('done submitting login');
   };
 
   handlePasswordChange = text => {

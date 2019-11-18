@@ -1,14 +1,56 @@
+import { connect } from 'react-redux';
+import PropTypes from 'prop-types';
 import React from 'react';
 import { ScrollView, StyleSheet, Text, TouchableOpacity } from 'react-native';
 import { ExpoLinksView } from '@expo/samples';
 
+import chatActions from '../redux/actions/chat';
+import ChatCard from '../components/ChatCard';
 import colors from '../styles/colors';
 
-export default function ChatScreen() {
-  return (
-    <ScrollView style={styles.container}>
-    </ScrollView>
-  );
+class ChatScreen extends React.Component {
+  componentDidMount() {
+    this.props.onLoad();
+  }
+
+  renderChats() {
+    const { chats } = this.props;
+    console.log('got chats', chats);
+
+    return chats.map(chat => <ChatCard key={chat._id} chat={chat} onPress={this.handleChatPress} />);
+  };
+
+  handleChatPress = (id) => {
+    const { navigation } = this.props;
+
+    console.log('pressed chat', id);
+    navigation.navigate('Chatroom', { chatroomId: id });
+  };
+
+  render() {
+    return (
+      <ScrollView style={styles.container}>
+        {this.renderChats()}
+      </ScrollView>
+    );
+  }
+}
+
+function mapStateToProps(state) {
+  const chatMap = state.chats.chats;
+  const chats = Object.values(chatMap);
+
+  return {
+    chats,
+  };
+}
+
+function mapDispatchToProps(dispatch) {
+  return {
+    onLoad: () => {
+      dispatch(chatActions.loadChats());
+    },
+  };
 }
 
 ChatScreen.navigationOptions = ({ navigation }) => ({
@@ -33,7 +75,6 @@ ChatScreen.navigationOptions = ({ navigation }) => ({
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    paddingTop: 15,
     backgroundColor: '#fff',
   },
   newChatButton: {
@@ -43,3 +84,15 @@ const styles = StyleSheet.create({
     fontSize: 12,
   },
 });
+
+ChatScreen.propTypes = {
+  chats: PropTypes.arrayOf(PropTypes.object),
+  onLoad: PropTypes.func,
+};
+
+ChatScreen.defaultProps = {
+  chats: [],
+  onLoad: () => {},
+};
+
+export default connect(mapStateToProps, mapDispatchToProps)(ChatScreen);

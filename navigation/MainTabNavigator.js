@@ -5,6 +5,7 @@ import { createStackNavigator, createBottomTabNavigator } from 'react-navigation
 import TabBarIcon from '../components/TabBarIcon';
 import EventsScreen from '../screens/EventsScreen';
 import ChatScreen from '../screens/ChatScreen';
+import ChatroomScreen from '../screens/ChatroomScreen';
 import NewChatScreen from '../screens/NewChatScreen';
 import ProfileScreen from '../screens/ProfileScreen';
 import NewEventScreen from '../screens/NewEventScreen';
@@ -42,6 +43,7 @@ const ChatStack = createStackNavigator(
   {
     Chat: ChatScreen,
     NewChat: NewChatScreen,
+    Chatroom: ChatroomScreen,
   },
   config
 );

@@ -2,9 +2,10 @@ import * as Contacts from 'expo-contacts';
 import { connect } from 'react-redux';
 import * as Permissions from 'expo-permissions';
 import React from 'react';
-import { View, Button, ActivityIndicator, ScrollView, Text, TouchableOpacity } from 'react-native';
+import { StyleSheet, View, Button, ActivityIndicator, ScrollView, Text, TouchableOpacity } from 'react-native';
 
 import authActions from '../redux/actions/auth';
+import chatActions from '../redux/actions/chat';
 import FriendCard from '../components/FriendCard';
 import userActions from '../redux/actions/users';
 import colors from '../styles/colors';
@@ -45,14 +46,25 @@ class NewChatScreen extends React.Component {
       alert('Unite needs access to your contacts. Please enable contacts permissions and restart the app.');
     }
   };
+
+  handleFriendPress = friendId => () => {
+    const { currentUser, navigation, onChatSelect } = this.props;
+    console.log('pressed friend', friendId, 'current user is', currentUser);
+    onChatSelect(currentUser._id, friendId)
+      .then(chatroomId => {
+        console.log('navigate to', chatroomId);
+        // navigation.navigate('Chatroom', { chatroomId });
+      });
+  };
   
   renderFriends() {
     const { friends } = this.props;
 
-    console.log('friends', friends);
     return friends.map(friendId => {
       return (
-        <FriendCard key={friendId} friendId={friendId} />
+        <TouchableOpacity key={friendId} onPress={this.handleFriendPress(friendId)}>
+          <FriendCard friendId={friendId} />
+        </TouchableOpacity>
       );
     });
   }
@@ -62,14 +74,16 @@ class NewChatScreen extends React.Component {
 
     if (loadingContacts) {
       return (
-        <ActivityIndicator />
+        <ActivityIndicator style={styles.spinner} />
       );
     }
 
     return (
-      <View>
-        <Text>You can import your phone contacts to see who is already on Unite.</Text>
-        <Button title="Import Contacts" onPress={this.importContacts} />
+      <View style={styles.contactsContainer}>
+        <Text style={styles.contactsPrompt}>You can import your phone contacts and see who's already on Unite.</Text>
+        <View style={styles.contactsButtonContainer}>
+          <Button title="Import Contacts" onPress={this.importContacts} style={styles.contactsButton} />
+        </View>
       </View>
     );
   }
@@ -83,6 +97,29 @@ class NewChatScreen extends React.Component {
     );
   }
 }
+
+const styles = StyleSheet.create({
+  contactsContainer: {
+    marginTop: 24,
+    marginBottom: 24,
+  },
+  contactsPrompt: {
+    textAlign: 'center',
+    marginLeft: 24,
+    marginRight: 24,
+  },
+  contactsButtonContainer: {
+    flexDirection: 'row',
+    justifyContent: 'center',
+    marginTop: 12,
+  },
+  contactsButton: {
+  },
+  spinner: {
+    marginTop: 24,
+    marginBottom: 24,
+  },
+});
 
 function mapStateToProps(state) {
   const currentUser = state.auth.currentUser || {};
@@ -98,6 +135,10 @@ function mapDispatchToProps(dispatch) {
   return {
     loadContacts(phoneNumbers) {
       return dispatch(authActions.loadContacts(phoneNumbers));
+    },
+    
+    onChatSelect(currentUserId, friendId) {
+      return dispatch(chatActions.createChatroom([currentUserId, friendId]));
     },
   };
 }

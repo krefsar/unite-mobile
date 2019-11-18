@@ -10,17 +10,15 @@ const DEFAULT_PHOTO_URL = 'https://unite-mobile.s3.amazonaws.com/defaultuser.png
 class FriendCard extends React.Component {
   componentDidMount() {
     const { friendId, onLoad } = this.props;
-    console.log('mounting friendcard', friendId);
     onLoad(friendId);
   }
 
   render() {
     const { friend } = this.props;
-    console.log('render friend', friend);
     const { photoUrl = DEFAULT_PHOTO_URL } = friend || {};
 
     return (
-      <View>
+      <View style={styles.cardContainer}>
         <View style={styles.photoContainer}>
           <Image source={{ uri: photoUrl }} style={styles.photo} />
         </View>
@@ -35,24 +33,41 @@ class FriendCard extends React.Component {
 }
 
 const styles = StyleSheet.create({
+  cardContainer: {
+    borderTopWidth: 1,
+    borderBottomWidth: 1,
+    borderColor: colors.gray,
+    flexDirection: 'row',
+  },
   photoContainer: {
     alignItems: 'center',
-    paddingBottom: 16,
-    paddingTop: 16,
+    borderWidth: 2,
+    borderColor: colors.blue,
+    marginTop: 12,
+    marginBottom: 12,
+    marginLeft: 12,
+    marginRight: 12,
+    overflow: 'hidden',
+    height: 64,
+    width: 64,
+    borderRadius: 32,
   },
   photo: {
     backgroundColor: colors.purple,
-    borderWidth: 2,
-    borderColor: colors.blue,
-    borderRadius: 56,
-    height: 112,
-    width: 112,
+    height: 64,
+    width: 64,
     resizeMode: 'center',
   },
   infoContainer: {
+    justifyContent: 'center',
+    paddingTop: 12,
+    paddingBottom: 12,
+    paddingLeft: 2,
+    paddingRight: 12,
   },
   friendName: {
     fontSize: 18,
+    fontWeight: 'bold',
   },
   friendStatus: {
     fontSize: 12,
@@ -62,7 +77,6 @@ const styles = StyleSheet.create({
 function mapStateToProps(state, ownProps) {
   const { friendId } = ownProps;
 
-  console.log('friend id', friendId, 'state', state);
   return {
     friend: state.users.users[friendId] || {},
   };

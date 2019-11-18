@@ -29,14 +29,12 @@ export function updateUser(updatedUser) {
 
 function loadUser(userId) {
   return (dispatch) => {
-    console.log('load user', userId);
     const url = `${SERVER_HOST}/users/${userId}`;
 
     return apiFetch(url, {
       method: 'GET',
     })
       .then(response => {
-        console.log('got response', response);
         dispatch(addUser(response.user));
       });
   };
